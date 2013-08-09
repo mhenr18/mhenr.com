@@ -3,6 +3,10 @@ layout: post
 title:  "3-Vec positioning for user interfaces"
 ---
 
+_Note: I anticipate that I'll revisit this topic at a later point, most likely
+around when I release the UI library I'm building on top of this new positioning
+model._
+
 ## Context
 
 I'm currently working on a native version of Line Rider (which I'll almost
@@ -32,7 +36,7 @@ talking about, it's something that desktop APIs haven't solved. By "solved",
 I don't mean that it's impossible to do UI in code with an API like Cocoa. That's
 far from the truth. 
 
-However, it's not possible to do UI in code that handles scaling without
+However, it's not currently possible to do UI in code that handles scaling without
 taking one of two approaches:
 
 - Use layout managers which make you learn a new API whenever you use a new layout,
@@ -68,7 +72,7 @@ Because it's an offset from that corner, things work just fine for elements plac
 that corner without even needing to adjust their position when the parent element is resized.
 
 Consider the parent element's area as a unit square. We'd represent its top-left corner as
-`(0, 0)` and its bottom-right corner as `(1, 1)`. If include a point in that square with the `(x, y)`
+`(0, 0)` and its bottom-right corner as `(1, 1)`. If we include a point in that square - the _anchor_ - with the `(x, y)`
 offset then we can get the benefits of not needing to adjust positions upon resizes. The
 position `(1, 1), (-12, -12)` will always represent a point that's 12px up and to the left of
 the bottom right corner of the element's parent, regardless of the parent's size.
