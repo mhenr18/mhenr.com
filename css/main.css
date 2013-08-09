@@ -14,8 +14,7 @@ html, body { height: 100%; }
 
 body {
   background-color: #FFF;
-  font: 13.34px Helvetica, Arial, sans-serif;
-  font-size: small;
+  font: 15px Helvetica, Arial, sans-serif;
   text-align: center;
 }
 
@@ -56,11 +55,16 @@ ul.posts span {
 /*****************************************************************************/
 
 .site {
-  font-size: 115%;
+  font-size: 100%;
   text-align: justify;
-  width: 42em;
+  width: 640px;
   margin: 3em auto 2em;
   line-height: 1.5em;
+}
+
+.site .header {
+	font-size: 110%;
+  font-weight: bold;
 }
 
 .site .header a {
@@ -73,12 +77,8 @@ ul.posts span {
   margin-bottom: 2em;
 }
 
-.site .header h1.title a {
+.site .header h1.title {
   color: #a00;
-}
-
-.site .header h1.title a:hover {
-  color: #000;
 }
 
 .site .header a.extra {
@@ -142,6 +142,7 @@ ul.posts span {
   border: 1px solid #ddd;
   background-color: #eef;
   padding: 0 .2em;
+  font-size: 70%;
 }
 
 .post pre code {

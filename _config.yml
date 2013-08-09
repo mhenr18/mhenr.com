@@ -1,3 +1,4 @@
-name: "[witty site name]"
+name: "[next in line]"
 markdown: redcarpet
 pygments: true
+permalink: /:title/index.html
