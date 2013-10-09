@@ -21,8 +21,8 @@ once you've compiled and linked with Google's testing framework, integration is 
 as [starting from a 50 line bolierplate!](https://code.google.com/p/googletest/wiki/Primer#Writing_the_main(\)_Function)
 
 What I want is something that needs no compilation, no linking with my project and no
-integration (well, aside from `#include "unittest.h"` in C++ source files). I want something
-that's as true to D as possible.
+integration (well, aside from `#include "unittest.h"` in C++ source files). Something that
+gives me D style unit testing in C++.
 
 ## Outcome/Example
 
@@ -97,8 +97,16 @@ static void TEST35() {
 
 As long as your code never mentions that particular name (given how odd it is the chances
 are fairly slim), that code will never be run. In fact, most compilers will realise that
-and strip the tests from the compiled binary (this is an optimization known as dead code
-elimination).
+and strip the tests from the compiled binary, an optimization known as dead code elimination.
+You can see this for yourself by comparing the filesizes of binaries compiled with and without
+unit tests:
+
+    bash-3.2$ clang++ -DUNIT_TESTS demo.cc -o demo_with_tests
+    bash-3.2$ clang++ demo.cc -o demo_without_tests
+    bash-3.2$ ls -l demo_*
+    -rwxr-xr-x  1 matt  staff  9612  9 Oct 16:04 demo_with_tests
+    -rwxr-xr-x  1 matt  staff  9228  9 Oct 16:04 demo_without_tests
+    bash-3.2$
 
 It's possible that the same test name will
 be used in different files (i.e they're declared on the same line), but this is why the

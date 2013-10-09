@@ -40,9 +40,9 @@ For more information, please refer to <http://unlicense.org/>
 #ifdef UNIT_TESTS
 #define unittest							\
 	static struct CONCAT(TEST, __LINE__) {				\
-		CONCAT(TEST, __LINE)();					\
+		CONCAT(TEST, __LINE__)();				\
 	} CONCAT(test, __LINE__);					\
-	void CONCAT(TEST, __LINE__)::CONCAT(TEST, __LINE__)()
+	CONCAT(TEST, __LINE__)::CONCAT(TEST, __LINE__)()
 #else
 #define unittest static void CONCAT(TEST, __LINE__)()
 #endif
