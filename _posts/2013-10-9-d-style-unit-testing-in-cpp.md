@@ -138,9 +138,7 @@ to have the same name.
 
 Because the tests depend on being declared as global variables, it means that (unlike D)
 you're not able to define unit tests anywhere but at the global level (however within a namespace
-should be fine). This isn't actually
-that much of a problem as unlike D, one typically declares member functions within the class/struct
-scope and then in a source file defines them. What this means is that this won't work:
+should be fine). What this means is that this won't work:
 
 {% highlight c++ %}
 {% raw %}
