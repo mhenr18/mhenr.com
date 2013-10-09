@@ -24,11 +24,13 @@ What I want is something that needs no compilation, no linking with my project a
 integration (well, aside from `#include "testing.h"` in C++ source files). I want something
 that's as true to D as possible.
 
-## Outcome
+## Outcome/Example
 
-I managed to end up getting exactly what I want. Once I include the [testing.h header](../assets/testing.h)
+I managed to end up getting exactly what I want. Before explaining what's going on and what the
+(minor) limitations are, I'll give an example of how it's used. Once I include the
+ [testing.h header](../assets/testing.h)
 in a C++ source file, I can write tests in the exact same way as I would in D. For asserting
-I just use `assert(expr)` from \<cassert\>. Here's an example of testing.h in action:
+I just use `assert(expr)` from \<cassert\>.
 
 {% highlight c++ %}
 {% raw %}
@@ -51,8 +53,8 @@ int main(int argc, const char** argv) {
 {% endraw %}
 {% endhighlight %}
 
-Compilation can be done as per usual. Like dmd, unit tests aren't included/run
-unless a flag is passed. In this case, testing is controlled by the UNIT_TESTS
+Compilation is unchanged. Like dmd, unit tests aren't included/run
+unless a flag is passed to the compiler. In this case, testing is controlled by the UNIT_TESTS
 define. So, regular compilation will produce this:
 
     bash-3.2$ clang++ demo.cc && ./a.out
@@ -67,3 +69,117 @@ an assertion failure in one of the tests:
     Abort trap: 6
     bash-3.2$ 
 
+Your mileage may vary about what information is logged on assertion failures, but most
+compilers should at least give a file and line number.
+
+## Explanation
+
+`unittest` is defined as a macro. When UNIT\_TESTS *isn't* defined by the compiler, the 
+`unittest` macro simply expands to a function declaration that's the concatenation of
+TEST and the current line in the file. The use of the line number is purely to keep names
+unique. This expansion is as follows:
+
+{% highlight c++ %}
+{% raw %}
+unittest { // this is line 35 of a source file
+    // ... do a test
+}
+
+// after preprocessing with unit tests disabled
+static void TEST35() {
+    // ... do a test
+}
+{% endraw %}
+{% endhighlight %}
+
+As long as your code never mentions that particular name (given how odd it is the chances
+are fairly slim), that code will never be run. In fact, most compilers will realise that
+and strip the tests from the compiled binary (this is an optimization known as dead code
+elimination).
+
+It's possible that the same test name will
+be used in different files (i.e they're declared on the same line), but this is why the
+function is declared as static - static functions sharing the same name won't cause linking
+errors as they're local to a single compilation unit.
+
+However, the real fun happens when UNIT\_TESTS *is* defined (whether it's by passing -DUNIT\_TESTS
+as a compiler option or just by uncommenting the `#define UNIT_TESTS` line in testing.h).
+In C++, the constructors of global variables are called before main(). When UNIT_TESTS is
+defined, the `unittest` macro takes advantage of this and expands into a structure declaration,
+the declaration of an instance of that struct as a global variable,
+and the beginning of the definition for that structure's default constructor. This expansion
+is as follows:
+
+{% highlight c++ %}
+{% raw %}
+unittest { // this is line 35 of a source file
+    // ... do a test
+}
+
+// after preprocessing with unit tests *enabled*
+static struct TEST35 {
+       TEST35(); // declare the default constructor
+} test35; // note the lower case name for the global variable
+
+TEST35::TEST35() {
+    // ... do a test
+}
+{% endraw %}
+{% endhighlight %}
+
+Much like the case where unit tests are disabled, the static keyword is used to make sure that
+the global variable's name doesn't clash with any other tests in other C++ files that managed
+to have the same name.
+
+## Limitations
+
+Because the tests depend on being declared as global variables, it means that (unlike D)
+you're not able to define unit tests anywhere but at the global level (however within a namespace
+should be fine). This isn't actually
+that much of a problem as unlike D, one typically declares member functions within the class/struct
+scope and then in a source file defines them. What this means is that this won't work:
+
+{% highlight c++ %}
+{% raw %}
+class foo {
+public:
+    void bar() {
+        // code...
+    }
+    unittest {
+        foo myFoo;
+        myFoo.bar();
+        // some assertion
+    }
+    // more class stuff...
+};
+{% endraw %}
+{% endhighlight %}
+
+However this is OK and will work as expected, as the unit test is now in global scope:
+
+{% highlight c++ %}
+{% raw %}
+// this is usually in a separate header file
+class foo {
+public:
+    void bar();
+    // more class stuff...
+};
+
+// and this is in a source file
+void foo::bar() {
+    // code...
+}
+unittest {
+    foo myFoo;
+    myFoo.bar();
+    // some assertion
+}
+{% endraw %}
+{% endhighlight %}
+
+Note that the function declaration could have stayed within the class block (as long as
+the unit test is outside it and global) but in D
+code the common practice is to define unit tests immediately below the function you're
+intending on testing. I agree with this pracice, otherwise it's not obvious what you're testing.
