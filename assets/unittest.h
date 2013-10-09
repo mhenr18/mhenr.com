@@ -25,8 +25,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <http://unlicense.org/>
 */
 
-#ifndef testing_h_
-#define testing_h_
+#ifndef unittest_h_
+#define unittest_h_
 
 #include <cassert>
 

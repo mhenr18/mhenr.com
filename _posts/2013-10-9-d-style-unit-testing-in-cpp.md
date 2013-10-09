@@ -21,14 +21,17 @@ once you've compiled and linked with Google's testing framework, integration is 
 as [starting from a 50 line bolierplate!](https://code.google.com/p/googletest/wiki/Primer#Writing_the_main(\)_Function)
 
 What I want is something that needs no compilation, no linking with my project and no
-integration (well, aside from `#include "testing.h"` in C++ source files). I want something
+integration (well, aside from `#include "unittest.h"` in C++ source files). I want something
 that's as true to D as possible.
 
 ## Outcome/Example
 
+[Download](/assets/unittest.h)  
+
+
 I managed to end up getting exactly what I want. Before explaining what's going on and what the
 (minor) limitations are, I'll give an example of how it's used. Once I include the
- [testing.h header](../assets/testing.h)
+unittest.h header
 in a C++ source file, I can write tests in the exact same way as I would in D. For asserting
 I just use `assert(expr)` from \<cassert\>.
 
@@ -36,7 +39,7 @@ I just use `assert(expr)` from \<cassert\>.
 {% raw %}
 // demo.cc
 #include <iostream>
-#include "testing.h"
+#include "unittest.h"
 
 unittest {
     assert(1 + 1 == 2); // this will obviously pass
@@ -103,7 +106,7 @@ function is declared as static - static functions sharing the same name won't ca
 errors as they're local to a single compilation unit.
 
 However, the real fun happens when UNIT\_TESTS *is* defined (whether it's by passing -DUNIT\_TESTS
-as a compiler option or just by uncommenting the `#define UNIT_TESTS` line in testing.h).
+as a compiler option or just by uncommenting the `#define UNIT_TESTS` line in unittest.h).
 In C++, the constructors of global variables are called before main(). When UNIT_TESTS is
 defined, the `unittest` macro takes advantage of this and expands into a structure declaration,
 the declaration of an instance of that struct as a global variable,
