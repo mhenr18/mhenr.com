@@ -21,7 +21,7 @@ once you've compiled and linked with Google's testing framework, integration is 
 as [starting from a 50 line bolierplate!](https://code.google.com/p/googletest/wiki/Primer#Writing_the_main(\)_Function)
 
 What I want is something that needs no compilation, no linking with my project and no
-integration (well, aside from `#include "testing.h"` in .cpp files). I want something
+integration (well, aside from `#include "testing.h"` in C++ source files). I want something
 that's as true to D as possible.
 
 ## Outcome
