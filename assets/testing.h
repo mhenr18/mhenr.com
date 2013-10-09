@@ -28,6 +28,8 @@ For more information, please refer to <http://unlicense.org/>
 #ifndef testing_h_
 #define testing_h_
 
+#include <cassert>
+
 // to include/run unit tests without using a compiler switch (i.e -DUNIT_TESTS),
 // you'll want to uncomment the next line.
 // #define UNIT_TESTS
@@ -42,10 +44,10 @@ For more information, please refer to <http://unlicense.org/>
 		CONCAT(TEST, __LINE__) () {				\
 			test_main();					\
 		}							\
-	}} CONCAT(test, __LINE__);					\
+	} CONCAT(test, __LINE__);					\
 	void CONCAT(TEST, __LINE__)::test_main()
 #else
-#define unittest void CONCAT(TEST, __LINE__)
+#define unittest void CONCAT(TEST, __LINE__)()
 #endif
 
 #endif
