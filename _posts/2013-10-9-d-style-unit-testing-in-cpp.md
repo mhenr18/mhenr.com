@@ -191,4 +191,4 @@ unittest {
 Note that the function declaration could have stayed within the class block (as long as
 the unit test is outside it and global) but in D
 code the common practice is to define unit tests immediately below the function you're
-intending on testing. I agree with this pracice, otherwise it's not obvious what you're testing.
+intending on testing. I agree with this practice, otherwise it's not obvious what you're testing.
